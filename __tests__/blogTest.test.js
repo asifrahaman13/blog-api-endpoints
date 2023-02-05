@@ -64,6 +64,6 @@ describe("POST /deleteblog", () => {
       .set("auth-token", authToken);
 
     expect(response.statusCode).toBe(200);
-    expect(response.body.Success).toBe("Note has been deleted");
+    expect(response.body.Success).toBe("Blog has been deleted");
   });
 });

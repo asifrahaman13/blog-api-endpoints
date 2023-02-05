@@ -4,8 +4,10 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
+// Use middleware for authentication purpose
 var fetchuser = require('../middleware/fetchuser');
 
+// Use any text for secret key
 const JWT_SECRET = 'Hello world';
 
 // ROUTE 1: Create a User using: POST "/api/auth/createuser". No login required
@@ -72,23 +74,28 @@ router.post('/login', [
       success = false
       return res.status(400).json({ error: "Please try to login with correct credentials" });
     }
-
+    // Compare the password entered with the password set using bcrypt
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare) {
+      // If password does not match then make success to false
       success = false
+      // Send error message
       return res.status(400).json({ success, error: "Please try to login with correct credentials" });
     }
-
+    // Define the data that you want to store in auth token
     const data = {
       user: {
         id: user.id
       }
     }
     const authtoken = jwt.sign(data, JWT_SECRET);
+    // If everything is allright then make the value of success true.
     success = true;
+    // Send a sucess message and a auth token
     res.json({ success, authtoken })
 
   } catch (error) {
+    // Send error message if anything is wrong
     console.error(error.message);
     res.status(500).send("Internal Server Error");
   }
